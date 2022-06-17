@@ -15,8 +15,13 @@ def getWeather():
     
     return f"{res}\n"
 
+@app.route('/healthy', methods=['GET'])
+def getHealth():
+    res = 0
+    return f"{res}\n"
+
 
 if __name__ == "__main__":
-    port=80
+    port=8081
     app.run(host="0.0.0.0", port=port)
 
