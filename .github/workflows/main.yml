@@ -26,6 +26,7 @@ jobs:
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
+          if: False
           with:
             resource-group: ${{ secrets.RESOURCE_GROUP }}
             dns-name-label: devops-${{ secrets.IDENTIFIANT_EFREI }}
