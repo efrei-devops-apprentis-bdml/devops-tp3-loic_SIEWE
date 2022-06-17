@@ -16,8 +16,9 @@ jobs:
         
         - name: 'Hadolint test'
           id: hadolint_test
-          run: RES=$(docker run --rm -i hadolint/hadolint < dockerfile | wc -l)
-
+          run: |
+            RES=$(docker run --rm -i hadolint/hadolint < dockerfile | wc -l)
+            echo $RES
 
         - name: 'Build and push image'
           uses: azure/docker-login@v1
