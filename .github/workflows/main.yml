@@ -41,7 +41,7 @@ jobs:
         - name: 'Deploy to Azure Container Instances'
           if: steps.hadolint_test.outputs.OUTPUT==0
           run: |
-          az container create 
+            az container create
               --resource-group ${{ secrets.RESOURCE_GROUP }}
               --name ${{ secrets.IDENTIFIANT_EFREI }}
               --dns-name-label devops-${{ secrets.IDENTIFIANT_EFREI }}
