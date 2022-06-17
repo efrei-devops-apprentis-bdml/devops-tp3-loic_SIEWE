@@ -26,7 +26,7 @@ jobs:
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
-          if: ${{ $(docker run --rm -i hadolint/hadolint < dockerfile | wc -l) -eq 0 }}
+          if: $(docker run --rm -i hadolint/hadolint < dockerfile | wc -l) -eq 0
           with:
             resource-group: ${{ secrets.RESOURCE_GROUP }}
             dns-name-label: devops-${{ secrets.IDENTIFIANT_EFREI }}
