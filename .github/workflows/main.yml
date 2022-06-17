@@ -16,7 +16,8 @@ jobs:
         
         - name: 'Hadolint test'
           id: hadolint_test
-          run: TEST=$(echo google)
+          run: TEST=0
 
-        - run: echo steps.hadolint_test.outputs.TEST
+        - if: steps.hadolint_test.outputs.TEST == 0
+          run: echo well done
    
