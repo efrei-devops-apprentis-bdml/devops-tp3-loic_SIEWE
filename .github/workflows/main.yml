@@ -51,7 +51,7 @@ jobs:
           if: steps.hadolint_test.outputs.OUTPUT==0
           uses: aws-actions/amazon-ecs-render-task-definition@v1
           with:
-            task-definition: ./task-definition.json
+            task-definition: task-definition.json
             container-name: ${{ secrets.IDENTIFIANT_EFREI }}
             image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.IDENTIFIANT_EFREI }}:v1
         
@@ -61,5 +61,5 @@ jobs:
           uses: aws-actions/amazon-ecs-deploy-task-definition@v1
           with:
             task-definition: ${{ steps.task-def.outputs.task-definition }}
-            service: ${{ secrets.ECS_SERVICE }} devops-tp3-service
-            cluster: ${{ secrets.ECS_CLUSTER }} devops-tp3-cluster
+            service: ${{ secrets.ECS_SERVICE }}
+            cluster: ${{ secrets.ECS_CLUSTER }}
