@@ -49,7 +49,7 @@ jobs:
           with:
             task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
             container-name: ${{ secrets.IDENTIFIANT_EFREI }}
-            image: ${{ steps.build-image.outputs.image }}
+            image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.IDENTIFIANT_EFREI }}:v1
         
         # deploy to ECS
         - name: Deploy Amazon ECS task definition
