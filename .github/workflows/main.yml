@@ -48,7 +48,6 @@ jobs:
           env:
             RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
             IDENTIFIANT_EFREI: devops-${{ secrets.IDENTIFIANT_EFREI }}
-            IDENTIFIANT_EFREI: ${{ secrets.IDENTIFIANT_EFREI }}
             REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
             REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
