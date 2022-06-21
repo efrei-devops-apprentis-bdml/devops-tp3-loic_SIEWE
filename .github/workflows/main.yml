@@ -28,3 +28,14 @@ jobs:
           run: |
             OUTPUT=$(docker run --rm -i hadolint/hadolint < dockerfile | wc -l)
             echo "::set-output name=OUTPUT::$OUTPUT"
+      
+        # build and push image to ECR
+        - name: 'Build and push image'
+          if: steps.hadolint_test.outputs.OUTPUT==0
+          env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_REPOSITORY: ${{ secrets.IDENTIFIANT_EFREI }}
+            IMAGE_TAG: v1
+          run: |
+            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
