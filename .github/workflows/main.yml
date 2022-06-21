@@ -47,7 +47,7 @@ jobs:
           if: steps.hadolint_test.outputs.OUTPUT==0
           uses: aws-actions/amazon-ecs-render-task-definition@v1
           with:
-            task-definition: ${{ secrets.ECS_TASK_DEFINITION }
+            task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
             container-name: ${{ secrets.IDENTIFIANT_EFREI }}
             image: ${{ steps.build-image.outputs.image }}
         
