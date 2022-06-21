@@ -13,8 +13,8 @@ jobs:
         - name: Configure AWS Credentials
           uses: aws-actions/configure-aws-credentials@v1
           with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-access-key-id: AKIAZJY4QHWBJOZNLJFQ
+            aws-secret-access-key: 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
             aws-region: eu-west-3
 
         # login to ECR
@@ -26,5 +26,5 @@ jobs:
         - name: 'Hadolint test'
           id: hadolint_test
           run: |
-            OUTPUT=$(docker run --rm -i hadolint/hadolint < dockerfile | wc -l )
+            OUTPUT=$(docker run --rm -i hadolint/hadolint < dockerfile | wc -l)
             echo "::set-output name=OUTPUT::$OUTPUT"
