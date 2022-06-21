@@ -1,0 +1,39 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:eu-west-3:639473040770:task-definition/devops-tp3-task-definition:1",
+    "containerDefinitions": [
+        {
+            "name": "20200236",
+            "image": "639473040770.dkr.ecr.eu-west-3.amazonaws.com/20200236:v1",
+            "cpu": 0,
+            "memory": 100,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": []
+        }
+    ],
+    "family": "devops-tp3-task-definition",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EXTERNAL",
+        "EC2"
+    ],
+    "requiresCompatibilities": [
+        "EC2"
+    ]
+}
