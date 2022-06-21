@@ -12,9 +12,15 @@ jobs:
         # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
-      
+        
+        # login to Azure
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
         # deploy to ACI
         - name: 'Deploy to Azure Container Instances'
           if: steps.hadolint_test.outputs.OUTPUT==0
           run: |
-            az container delete --yes --name 20200236 --resource-group ${{ secrets.RESOURCE_GROUP }}
+            az container delete --name 20200236 --resource-group ${{ secrets.RESOURCE_GROUP }}
