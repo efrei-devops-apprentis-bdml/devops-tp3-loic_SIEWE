@@ -17,4 +17,4 @@ jobs:
         - name: 'Deploy to Azure Container Instances'
           if: steps.hadolint_test.outputs.OUTPUT==0
           run: |
-            az container delete --name 20200236 --resource-group ${{ secrets.RESOURCE_GROUP }}
+            az container delete --yes --name 20200236 --resource-group ${{ secrets.RESOURCE_GROUP }}
