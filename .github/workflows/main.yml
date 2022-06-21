@@ -9,53 +9,44 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
         
-        # login to AWS
-        - name: Configure AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v1
+        # login to Azure
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
           with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: eu-west-3
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-        # login to ECR
-        - name: Login to Amazon ECR
-          id: login-ecr
-          uses: aws-actions/amazon-ecr-login@v1
-          
+        # login to ACR
+        - name: 'Login to ACR'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+        
         # lint dockerfile
         - name: 'Hadolint test'
           id: hadolint_test
           run: |
             OUTPUT=$(docker run --rm -i hadolint/hadolint < dockerfile | wc -l)
             echo "::set-output name=OUTPUT::$OUTPUT"
-      
-        # build and push image to ECR
-        - name: 'Build and push image'
-          id: build-image
-          if: steps.hadolint_test.outputs.OUTPUT==0
-          env:
-            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            ECR_REPOSITORY: ${{ secrets.IDENTIFIANT_EFREI }}
-            IMAGE_TAG: v1
-          run: |
-            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-        # create ECS task definition
-        - name: Fill in the new image ID in the Amazon ECS task definition
-          id: task-def
-          if: steps.hadolint_test.outputs.OUTPUT==0
-          uses: aws-actions/amazon-ecs-render-task-definition@v1
-          with:
-            task-definition: ./task-definition.json
-            container-name: ${{ secrets.IDENTIFIANT_EFREI }}
-            image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.IDENTIFIANT_EFREI }}:v1
         
-        # deploy to ECS
-        - name: Deploy Amazon ECS task definition
+        # build and push image to ACR
+        - name: 'Build and push image'
           if: steps.hadolint_test.outputs.OUTPUT==0
-          uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-          with:
-            task-definition: ${{ steps.task-def.outputs.task-definition }}
-            service: ${{ secrets.ECS_SERVICE }} devops-tp3-service
-            cluster: ${{ secrets.ECS_CLUSTER }} devops-tp3-cluster
+          run: |
+            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.IDENTIFIANT_EFREI }}:v1
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.IDENTIFIANT_EFREI }}:v1
+        
+        # deploy to ACI
+        - name: 'Deploy to Azure Container Instances'
+          if: steps.hadolint_test.outputs.OUTPUT==0
+          run: |
+            az container create --resource-group ${{ secrets.RESOURCE_GROUP }} \
+              --name ${{ secrets.IDENTIFIANT_EFREI }} \
+              --dns-name-label devops-${{ secrets.IDENTIFIANT_EFREI }}  \
+              --registry-login-server ${{ secrets.REGISTRY_LOGIN_SERVER }}  \
+              --registry-password ${{ secrets.REGISTRY_PASSWORD }}  \
+              --registry-username ${{ secrets.REGISTRY_USERNAME }}  \
+              --secure-environment-variables API_KEY=${{ secrets.API_KEY}}  \
+              --location 'france central'  \
+              --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.IDENTIFIANT_EFREI }}:v1
