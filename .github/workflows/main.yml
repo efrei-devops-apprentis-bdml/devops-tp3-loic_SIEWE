@@ -14,5 +14,5 @@ jobs:
           uses: aws-actions/configure-aws-credentials@v1
           with:
             aws-access-key-id: AKIAZJY4QHWBJOZNLJFQ
-            aws-secret-access-key: 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
+            aws-secret-access-key: fp1e6CyoCWMg45bRXyAPssgZJJNJNKnHpKxfqP
             aws-region: eu-west-3
