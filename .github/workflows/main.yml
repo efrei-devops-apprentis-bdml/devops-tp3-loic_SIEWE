@@ -60,6 +60,6 @@ jobs:
           if: steps.hadolint_test.outputs.OUTPUT==0
           uses: aws-actions/amazon-ecs-deploy-task-definition@v1
           with:
-            task-definition: ${{ steps.task-def.outputs.task-definition }}
+            task-definition: ${{ steps.task-def.outputs.task-definition  }}
             service: ${{ secrets.ECS_SERVICE }}
             cluster: ${{ secrets.ECS_CLUSTER }}
