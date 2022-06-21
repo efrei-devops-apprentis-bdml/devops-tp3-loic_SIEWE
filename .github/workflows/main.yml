@@ -9,7 +9,7 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
         
-        # login to Azure
+        # login to AWS
         - name: Configure AWS Credentials
           uses: aws-actions/configure-aws-credentials@v1
           with:
@@ -31,6 +31,7 @@ jobs:
       
         # build and push image to ECR
         - name: 'Build and push image'
+          id: build-image
           if: steps.hadolint_test.outputs.OUTPUT==0
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -39,3 +40,22 @@ jobs:
           run: |
             docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+        # create ECS task definition
+        - name: Fill in the new image ID in the Amazon ECS task definition
+          id: task-def
+          if: steps.hadolint_test.outputs.OUTPUT==0
+          uses: aws-actions/amazon-ecs-render-task-definition@v1
+          with:
+            task-definition: ${{ secrets.ECS_TASK_DEFINITION }
+            container-name: ${{ secrets.IDENTIFIANT_EFREI }}
+            image: ${{ steps.build-image.outputs.image }}
+        
+        # deploy to ECS
+        - name: Deploy Amazon ECS task definition
+          if: steps.hadolint_test.outputs.OUTPUT==0
+          uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+          with:
+            task-definition: ${{ steps.task-def.outputs.task-definition }}
+            service: ${{ secrets.ECS_SERVICE }} devops-tp3-service
+            cluster: ${{ secrets.ECS_CLUSTER }} devops-tp3-cluster
